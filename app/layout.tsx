@@ -12,7 +12,7 @@ export const metadata = {
   description: "Portfolio of Shafat Alam - Web Designer, Web Developer, FiveM Developer, and Discord Bot Developer.",
   icons: {
     icon: "/favicon.ico",
-    apple: "/apple-icon.png",
+    apple: "/apple-touch-icon.png",
   },
 }
 
