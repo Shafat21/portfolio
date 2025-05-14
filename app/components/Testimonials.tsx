@@ -22,7 +22,7 @@ export default function Testimonials() {
     {
       id: 1,
       name: "whizzblazze",
-      position: "Client",
+      position: "Fiverr Client",
       company: "United States",
       content:
         "I recently had the pleasure of availing the Fivem Discord server service provided by Shafat on Fiverr. I must say, the experience was nothing short of exceptional. From the very beginning, Shafat demonstrated professionalism, expertise, and a genuine dedication to ensuring my satisfaction.",
@@ -32,7 +32,7 @@ export default function Testimonials() {
     {
       id: 2,
       name: "dliamondking",
-      position: "Client",
+      position: "Fiverr Client",
       company: "Belgium",
       content:
         "thanks for fixen my new bot youre the best",
@@ -42,7 +42,7 @@ export default function Testimonials() {
     {
       id: 3,
       name: "donthelosr",
-      position: "Client",
+      position: "Fiverr Client",
       company: "United States",
       content:
         "Reached out to me in my server to help, 10/10 please come to this guy",
@@ -52,7 +52,7 @@ export default function Testimonials() {
     {
       id: 4,
       name: "sneeko93",
-      position: "Client",
+      position: "Fiverr Client",
       company: "Canada",
       content:
         "Mans came in my discord and had this stuff done in less then a hour. 10/10 minted dude. Will be using his Services again",
@@ -62,7 +62,7 @@ export default function Testimonials() {
     {
       id: 5,
       name: "sandrozh",
-      position: "Client",
+      position: "Fiverr Client",
       company: "Switzerland",
       content:
         "The work with Shafat was very pleasant. He implemented my ideas superbly and provided a very good service. I will contact him again next time.",
@@ -72,7 +72,7 @@ export default function Testimonials() {
     {
       id: 6,
       name: "kcoolz16",
-      position: "Client",
+      position: "Fiverr Client",
       company: "Canada",
       content:
         "Excellent at communicating and very fast with delivery and revisions.",
@@ -82,7 +82,7 @@ export default function Testimonials() {
     {
       id: 7,
       name: "tufmike",
-      position: "Client",
+      position: "Fiverr Client",
       company: "United States",
       content:
         "Best discord designer!",
@@ -92,7 +92,7 @@ export default function Testimonials() {
     {
       id: 8,
       name: "msbootyz",
-      position: "Client",
+      position: "Fiverr Client",
       company: "New Zealand",
       content:
         "A+++ fast response and delivery. From start to finish he was there to help me",
@@ -102,7 +102,7 @@ export default function Testimonials() {
     {
       id: 9,
       name: "tristenhinton",
-      position: "Client",
+      position: "Fiverr Client",
       company: "United States",
       content:
         "Outstanding experience!",
@@ -112,7 +112,7 @@ export default function Testimonials() {
     {
       id: 10,
       name: "johngregory844",
-      position: "Client",
+      position: "Fiverr Client",
       company: "United Kingdom",
       content:
         "thank you for everything you have done for me and my fivem server",
@@ -122,7 +122,7 @@ export default function Testimonials() {
     {
       id: 11,
       name: "alfredk784",
-      position: "Client",
+      position: "Fiverr Client",
       company: "Finland",
       content:
         "Fast deliver and amazing work",
@@ -132,7 +132,7 @@ export default function Testimonials() {
     {
       id: 12,
       name: "buscottii",
-      position: "Client",
+      position: "Fiverr Client",
       company: "United States",
       content:
         "THE BEST!!!!",
@@ -142,7 +142,7 @@ export default function Testimonials() {
     {
       id: 13,
       name: "treefilms",
-      position: "Client",
+      position: "Fiverr Client",
       company: "United States",
       content:
         "Outstanding experience!",
@@ -152,7 +152,7 @@ export default function Testimonials() {
     {
       id: 14,
       name: "sincitycommunit",
-      position: "Client",
+      position: "Fiverr Client",
       company: "Austria",
       content:
         "danke Bine. Vă rugăm să mă evaluați⭐ Avans Multumesc",
@@ -162,7 +162,7 @@ export default function Testimonials() {
     {
       id: 15,
       name: "sneeko93",
-      position: "Client",
+      position: "Fiverr Client",
       company: "Canada",
       content:
         "fast, an easy to deal with 💯❤️ 10/10 using again",
@@ -172,7 +172,7 @@ export default function Testimonials() {
     {
       id: 16,
       name: "pierreantoinele",
-      position: "Client",
+      position: "Fiverr Client",
       company: "France",
       content:
         "very well job and quick delivery, thanks you man !",
@@ -182,7 +182,7 @@ export default function Testimonials() {
     {
       id: 17,
       name: "dliamondking",
-      position: "Client",
+      position: "Fiverr Client",
       company: "Belgium",
       content:
         "the person is realy fast in delivery 100 % legit recommend it to everyone",
