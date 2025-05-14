@@ -10,7 +10,10 @@ const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space
 export const metadata = {
   title: "Shafat Alam | Web & FiveM Developer",
   description: "Portfolio of Shafat Alam - Web Designer, Web Developer, FiveM Developer, and Discord Bot Developer.",
-    generator: 'v0.dev'
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-icon.png",
+  },
 }
 
 export default function RootLayout({
