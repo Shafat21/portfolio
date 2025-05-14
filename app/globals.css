@@ -1,0 +1,179 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply transition-colors duration-300;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 93%; /* #EEEEEE */
+    --foreground: 200 37% 26%; /* #2A4759 */
+
+    --muted: 0 0% 87%; /* #DDDDDD */
+    --muted-foreground: 200 37% 26%; /* #2A4759 */
+
+    --popover: 0 0% 93%; /* #EEEEEE */
+    --popover-foreground: 200 37% 26%; /* #2A4759 */
+
+    --card: 0 0% 93%; /* #EEEEEE */
+    --card-foreground: 200 37% 26%; /* #2A4759 */
+
+    --border: 0 0% 87%; /* #DDDDDD */
+    --input: 0 0% 87%; /* #DDDDDD */
+
+    --primary: 20 87% 65%; /* #F79B72 */
+    --primary-foreground: 0 0% 93%; /* #EEEEEE */
+
+    --secondary: 200 37% 26%; /* #2A4759 */
+    --secondary-foreground: 0 0% 93%; /* #EEEEEE */
+
+    --accent: 20 87% 65%; /* #F79B72 */
+    --accent-foreground: 200 37% 26%; /* #2A4759 */
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 93%; /* #EEEEEE */
+
+    --ring: 20 87% 65%; /* #F79B72 */
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 200 37% 26%; /* #2A4759 */
+    --foreground: 0 0% 93%; /* #EEEEEE */
+
+    --muted: 200 30% 30%; /* Darker navy */
+    --muted-foreground: 0 0% 87%; /* #DDDDDD */
+
+    --popover: 200 37% 26%; /* #2A4759 */
+    --popover-foreground: 0 0% 93%; /* #EEEEEE */
+
+    --card: 200 37% 26%; /* #2A4759 */
+    --card-foreground: 0 0% 93%; /* #EEEEEE */
+
+    --border: 200 30% 30%; /* Darker navy */
+    --input: 200 30% 30%; /* Darker navy */
+
+    --primary: 20 87% 65%; /* #F79B72 */
+    --primary-foreground: 200 37% 26%; /* #2A4759 */
+
+    --secondary: 0 0% 87%; /* #DDDDDD */
+    --secondary-foreground: 200 37% 26%; /* #2A4759 */
+
+    --accent: 20 87% 65%; /* #F79B72 */
+    --accent-foreground: 200 37% 26%; /* #2A4759 */
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 93%; /* #EEEEEE */
+
+    --ring: 20 87% 65%; /* #F79B72 */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .animate-gradient-x {
+    animation: gradient-x 15s ease infinite;
+  }
+
+  .animate-gradient-slow {
+    animation: gradient-slow 8s ease infinite alternate;
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-circuit-flow {
+    animation: circuit-flow 4s linear infinite;
+  }
+
+  @keyframes gradient-x {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  @keyframes gradient-slow {
+    0% {
+      background-position: 0% 0%;
+    }
+    100% {
+      background-position: 100% 100%;
+    }
+  }
+
+  @keyframes pulse-glow {
+    0% {
+      box-shadow: 0 0 5px rgba(247, 155, 114, 0.5);
+    }
+    100% {
+      box-shadow: 0 0 20px rgba(247, 155, 114, 0.8), 0 0 30px rgba(247, 155, 114, 0.6);
+    }
+  }
+
+  @keyframes float {
+    0% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+    100% {
+      transform: translateY(0px);
+    }
+  }
+
+  @keyframes circuit-flow {
+    0% {
+      stroke-dashoffset: 1000;
+    }
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+}
+
+/* Neon text effects */
+.neon-text-coral {
+  color: #f79b72;
+  text-shadow: 0 0 5px rgba(247, 155, 114, 0.5), 0 0 10px rgba(247, 155, 114, 0.3);
+}
+
+.neon-text-navy {
+  color: #2a4759;
+  text-shadow: 0 0 5px rgba(42, 71, 89, 0.5), 0 0 10px rgba(42, 71, 89, 0.3);
+}
+
+.neon-text-gray {
+  color: #dddddd;
+  text-shadow: 0 0 5px rgba(221, 221, 221, 0.5), 0 0 10px rgba(221, 221, 221, 0.3);
+}
+
+/* Glassmorphism */
+.glass-card {
+  background: rgba(42, 71, 89, 0.75);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(247, 155, 114, 0.125);
+}
