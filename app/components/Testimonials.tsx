@@ -21,13 +21,13 @@ export default function Testimonials() {
   const testimonials: Testimonial[] = [
     {
       id: 1,
-      name: "whizzblazze",
+      name: "tufmike",
       position: "Fiverr Client",
       company: "United States",
       content:
-        "I recently had the pleasure of availing the Fivem Discord server service provided by Shafat on Fiverr. I must say, the experience was nothing short of exceptional. From the very beginning, Shafat demonstrated professionalism, expertise, and a genuine dedication to ensuring my satisfaction.",
+        "Best discord designer!",
       rating: 5,
-      image: "/user.png",
+      image: "https://fiverr-res.cloudinary.com/image/upload/f_auto,q_auto,t_profile_small/v1/attachments/profile/photo/1d7092595d32768691edd343df53abc2-1353364841670385059.1897302/6AFFE0EE-08D5-419E-8E1D-0DE9A76FD3DF",
     },
     {
       id: 2,
@@ -81,13 +81,13 @@ export default function Testimonials() {
     },
     {
       id: 7,
-      name: "tufmike",
+      name: "whizzblazze",
       position: "Fiverr Client",
       company: "United States",
       content:
-        "Best discord designer!",
+        "I recently had the pleasure of availing the Fivem Discord server service provided by Shafat on Fiverr. I must say, the experience was nothing short of exceptional. From the very beginning, Shafat demonstrated professionalism, expertise, and a genuine dedication to ensuring my satisfaction.",
       rating: 5,
-      image: "https://fiverr-res.cloudinary.com/image/upload/f_auto,q_auto,t_profile_small/v1/attachments/profile/photo/1d7092595d32768691edd343df53abc2-1353364841670385059.1897302/6AFFE0EE-08D5-419E-8E1D-0DE9A76FD3DF",
+      image: "/user.png",
     },
     {
       id: 8,
