@@ -104,8 +104,6 @@ export default function Projects() {
       icon: <Code className="w-6 h-6 text-lightgray-300" />,
       type: "live",
       category: "Web",
-      featured: true,
-      pinned: true,
     },
     {
       title: "GSRP FiveM Website",
@@ -126,7 +124,6 @@ export default function Projects() {
       icon: <Code className="w-6 h-6 text-lightgray-300" />,
       type: "live",
       category: "Web",
-      pinned: true,
     },
 
     // FiveM Projects
