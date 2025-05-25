@@ -100,7 +100,7 @@ export default function About() {
                   <Brain className="w-6 h-6 text-coral-400" />
                 </div>
                 <h3 className="text-2xl font-bold text-lightgray-100 font-display">
-                  Full-Stack Developer & AI Engineer
+                  Full-Stack Developer & FiveM Developer
                 </h3>
               </div>
 
