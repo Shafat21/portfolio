@@ -106,6 +106,15 @@ export default function Projects() {
       category: "Web",
     },
     {
+      title: "The Commonwealth RP - FiveM Roleplay Server",
+      description: "Are you looking to elevate your streaming content with a truly immersive, cinematic FiveM roleplay experience?",
+      techStack: "Next.jS, Tailwind",
+      link: "https://thecommonwealthrp.com/",
+      icon: <Code className="w-6 h-6 text-coral-400" />,
+      type: "live",
+      category: "Web",
+    },
+    {
       title: "GSRP FiveM Website",
       description: "Join Georgia State Role Play, a premier FiveM roleplay server featuring law enforcement, emergency services, and realistic civilian life.",
       techStack: "Next.jS, Tailwind, FiveM API",
