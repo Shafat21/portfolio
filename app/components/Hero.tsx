@@ -3,6 +3,10 @@
 import { useEffect, useRef, useState } from "react"
 import { motion } from "framer-motion"
 import { GitlabIcon as GitHub, Linkedin, Mail, Cloud } from "lucide-react"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faGithub, faLinkedin, faDiscord } from "@fortawesome/free-brands-svg-icons"
+import { faEnvelope } from "@fortawesome/free-solid-svg-icons"
+
 import { smoothScrollTo } from "@/utils/smoothScroll"
 
 // Enhanced typing animation component
@@ -337,14 +341,14 @@ export default function Hero() {
               className="p-3 rounded-full bg-navy-800/80 backdrop-blur-sm border border-navy-600 hover:bg-coral-400 hover:border-coral-500 transition-all duration-300"
               aria-label="LinkedIn Profile"
             >
-              <Linkedin className="w-6 h-6" />
+              <FontAwesomeIcon icon={faLinkedin} className="w-6 h-6" />
             </a>
             <a
               href="mailto:shafat.mahtab@gmail.com"
               className="p-3 rounded-full bg-navy-800/80 backdrop-blur-sm border border-navy-600 hover:bg-coral-400 hover:border-coral-500 transition-all duration-300"
               aria-label="Email Contact"
             >
-              <Mail className="w-6 h-6" />
+              <FontAwesomeIcon icon={faEnvelope} className="w-6 h-6" />
             </a>
             <a
               href="https://github.com/Shafat21"
@@ -353,7 +357,7 @@ export default function Hero() {
               className="p-3 rounded-full bg-navy-800/80 backdrop-blur-sm border border-navy-600 hover:bg-coral-400 hover:border-coral-500 transition-all duration-300"
               aria-label="GitHub Profile"
             >
-              <GitHub className="w-6 h-6" />
+              <FontAwesomeIcon icon={faGithub} className="w-6 h-6" />
             </a>
             <a
               href="https://discord.com/users/493042603181342730"
@@ -362,7 +366,7 @@ export default function Hero() {
               className="p-3 rounded-full bg-navy-800/80 backdrop-blur-sm border border-navy-600 hover:bg-coral-400 hover:border-coral-500 transition-all duration-300"
               aria-label="Discord Profile"
             >
-              <Cloud className="w-6 h-6" />
+              <FontAwesomeIcon icon={faDiscord} className="w-6 h-6" />
             </a>
           </motion.div>
 
