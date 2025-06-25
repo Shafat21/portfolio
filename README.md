@@ -1,0 +1,1 @@
+Official portfolio of Shafat Alam — Full Stack Web Developer, UI/UX Designer, FiveM Developer (ESX/QBCore), and Discord Bot Creator. Offering responsive websites, Tebex stores, and game automation bots.
