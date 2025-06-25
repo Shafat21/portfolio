@@ -8,37 +8,35 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space" })
 
 export const metadata = {
-  title: "Shafat Alam | Web Designer, FiveM ESX/QBCore Developer & Discord Bot Expert",
+  title: "Shafat Alam | Web Developer, FiveM ESX/QBCore Scripter & Discord Bot Expert",
   description:
-    "Explore the portfolio of Shafat Alam — full-stack web developer, FiveM (ESX & QBCore) developer, custom Discord bot creator, and UI/UX designer. Offering services in web design, WordPress development, FiveM scripting, and Discord integrations.",
+    "Official portfolio of Shafat Alam — Full Stack Web Developer, UI/UX Designer, FiveM Developer (ESX/QBCore), and Discord Bot Creator. Offering responsive websites, Tebex stores, and game automation bots.",
   keywords: [
     "Shafat Alam",
     "Web Developer",
     "Web Designer",
-    "UI/UX Designer",
-    "Frontend Developer",
     "Full Stack Developer",
+    "UI UX Designer",
     "Next.js Developer",
     "React Developer",
-    "Tailwind Developer",
+    "Tailwind CSS",
     "WordPress Developer",
+    "Custom WordPress Sites",
     "FiveM Developer",
-    "FiveM ESX Developer",
-    "FiveM QBCore Developer",
+    "FiveM ESX Scripter",
+    "QBCore Developer",
     "Lua Developer",
+    "FiveM Tebex Developer",
     "Discord Bot Developer",
+    "Discord.js Bot",
+    "Discord FiveM Bot",
     "Custom Discord Bots",
-    "Discord FiveM Bots",
-    "Discord.js",
-    "Bot Developer",
-    "Tebex Store Design",
-    "Gaming Community Developer",
-    "Portfolio Website",
-    "Creative Developer",
-    "Modern UI Developer",
+    "Gaming Website Designer",
+    "Roleplay Server Developer",
     "GTA RP Developer",
-    "GSRP Developer",
-    "Automation Developer"
+    "Tebex Store Design",
+    "Bot Automation",
+    "Portfolio Website Developer"
   ],
   authors: [{ name: "Shafat Alam", url: "https://shafat21.dragondesignstudio.com" }],
   creator: "Shafat Alam",
@@ -48,17 +46,17 @@ export const metadata = {
     apple: "/apple-touch-icon.png",
   },
   openGraph: {
-    title: "Shafat Alam | Web & Game Developer Portfolio",
+    title: "Shafat Alam | Full Stack Web & Game Development Services",
     description:
-      "Web, FiveM & Discord Bot Developer — Explore professional services in UI design, ESX scripting, and full-stack development.",
+      "View the professional portfolio of Shafat Alam – expert in FiveM scripting, Discord bot automation, modern web design, and more.",
     url: "https://shafat21.dragondesignstudio.com",
-    siteName: "Shafat Alam Portfolio",
+    siteName: "Shafat21 Portfolio",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Shafat Alam Portfolio OpenGraph Image",
+        alt: "Shafat Alam Portfolio Banner",
       },
     ],
     locale: "en_US",
@@ -66,15 +64,22 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Shafat Alam | Full Stack Web & Game Developer",
+    title: "Shafat Alam | Web Developer, FiveM & Discord Expert",
     description:
-      "Portfolio of Shafat Alam – offering professional FiveM, web, and bot development services.",
+      "Offering full stack development services including custom bots, gaming scripts, and responsive web design.",
     images: ["/og-image.png"],
-    creator: "@shafat21", // update if applicable
+    creator: "@shafatdev", // update if applicable
   },
   metadataBase: new URL("https://shafat21.dragondesignstudio.com"),
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+  },
+  alternates: {
+    canonical: "https://shafat21.dragondesignstudio.com",
+  },
 }
-
 
 export default function RootLayout({
   children,
