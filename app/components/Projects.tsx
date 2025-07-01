@@ -108,6 +108,17 @@ export default function Projects() {
       pinned: true,
     },
     {
+      title: "The Reflection RP - Chinese FiveM Roleplay Server",
+      description: "This is Traditional Chinese - So No Description ",
+      techStack: "Next.jS, Tailwind",
+      link: "https://www.dragon1688888.com/",
+      icon: <Code className="w-6 h-6 text-coral-400" />,
+      type: "live",
+      category: "Web",
+      featured: true,
+      pinned: true,
+    },
+    {
       title: "BlazedRP - FiveM Roleplay Server",
       description: "Experience next-level roleplay in our meticulously crafted world with custom jobs, properties, and a thriving economy.",
       techStack: "Next.jS, Tailwind",
