@@ -77,7 +77,7 @@ export default function Projects() {
     {
       title: "Al Quran Institute",
       description: "Educational platform for Quran studies with course registration and management",
-      techStack: "WordPress (Soon to be Next.js)",
+      techStack: "Next.js, Tailwind, Express, API",
       link: "https://alquraninstitute.net/",
       icon: <BookOpen className="w-6 h-6 text-coral-400" />,
       type: "live",
@@ -99,7 +99,7 @@ export default function Projects() {
     {
       title: "The Commonwealth RP - FiveM Roleplay Server",
       description: "Are you looking to elevate your streaming content with a truly immersive, cinematic FiveM roleplay experience?",
-      techStack: "Next.jS, Tailwind",
+      techStack: "Next.js, Tailwind",
       link: "https://thecommonwealthrp.com/",
       icon: <Code className="w-6 h-6 text-coral-400" />,
       type: "live",
@@ -110,7 +110,7 @@ export default function Projects() {
     {
       title: "The Reflection RP - Chinese FiveM Roleplay Server",
       description: "This is Traditional Chinese - So No Description ",
-      techStack: "Next.jS, Tailwind",
+      techStack: "Next.js, Tailwind",
       link: "https://www.dragon1688888.com/",
       icon: <Code className="w-6 h-6 text-coral-400" />,
       type: "live",
@@ -121,7 +121,7 @@ export default function Projects() {
     {
       title: "BlazedRP - FiveM Roleplay Server",
       description: "Experience next-level roleplay in our meticulously crafted world with custom jobs, properties, and a thriving economy.",
-      techStack: "Next.jS, Tailwind",
+      techStack: "Next.js, Tailwind",
       link: "https://blazerp.lt/",
       icon: <Code className="w-6 h-6 text-coral-400" />,
       type: "live",
@@ -130,7 +130,7 @@ export default function Projects() {
     {
       title: "GSRP FiveM Website",
       description: "Join Georgia State Role Play, a premier FiveM roleplay server featuring law enforcement, emergency services, and realistic civilian life.",
-      techStack: "Next.jS, Tailwind, FiveM API",
+      techStack: "Next.js, Tailwind, FiveM API",
       link: "https://gsrp-three.vercel.app/",
       icon: <Code className="w-6 h-6 text-coral-400" />,
       type: "live",
@@ -141,7 +141,7 @@ export default function Projects() {
     {
       title: "Peaky Blinders | Cops and Robbers V Crew Website",
       description: "Join the dominant force in FiveM's Cops and Robbers. From high-stakes heists to law enforcement takeovers, Peaky Blinders plays hard and fair.",
-      techStack: "Next.jS, Tailwind, FiveM API, CNRV API",
+      techStack: "Next.js, Tailwind, FiveM API, CNRV API",
       link: "https://github.com/Shafat21/Peaky-Blinders-Crew-iy",
       icon: <Code className="w-6 h-6 text-lightgray-300" />,
       type: "github",
