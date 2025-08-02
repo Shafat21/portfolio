@@ -122,7 +122,7 @@ export default function Projects() {
       title: "BlazedRP - FiveM Roleplay Server",
       description: "Experience next-level roleplay in our meticulously crafted world with custom jobs, properties, and a thriving economy.",
       techStack: "Next.js, Tailwind",
-      link: "https://blazerp.lt/",
+      link: "https://blazedrp.vercel.app/",
       icon: <Code className="w-6 h-6 text-coral-400" />,
       type: "live",
       category: "Web",
