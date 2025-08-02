@@ -138,16 +138,6 @@ export default function Projects() {
       featured: true,
       pinned: true,
     },
-    {
-      title: "Peaky Blinders | Cops and Robbers V Crew Website",
-      description: "Join the dominant force in FiveM's Cops and Robbers. From high-stakes heists to law enforcement takeovers, Peaky Blinders plays hard and fair.",
-      techStack: "Next.js, Tailwind, FiveM API, CNRV API",
-      link: "https://github.com/Shafat21/Peaky-Blinders-Crew-iy",
-      icon: <Code className="w-6 h-6 text-lightgray-300" />,
-      type: "github",
-      category: "Web",
-    },
-
     // FiveM Projects
     {
       title: "Lunar Contact Admin",
