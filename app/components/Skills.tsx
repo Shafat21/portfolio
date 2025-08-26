@@ -108,14 +108,14 @@ export default function Skills() {
     {
       icon: Code,
       title: "Front-End Development",
-      technologies: "HTML, CSS, JavaScript, React.js",
+      technologies: "HTML, CSS, JavaScript, React.js, Next.js, Typescript",
       description: "Building modern, responsive user interfaces with React.js and core front-end technologies.",
       color: "coral",
     },
     {
       icon: Server,
       title: "Back-End Development",
-      technologies: "Node.js, Express, PHP",
+      technologies: "Node.js, Express, Next.js, Typescript",
       description: "Developing scalable back-end solutions with multiple programming languages.",
       color: "lightgray",
     },
