@@ -99,7 +99,18 @@ export default function Projects() {
     {
       title: "HeartLand Exteriors Twister City LLC",
       description: "Full Service Exteriors & General Contracting Crew For Builders of all Kinds",
-      techStack: "Next.js, Tailwind",
+      techStack: "Next.js, Tailwind, JSON, SQLite",
+      link: "https://www.twistercityexteriors.com/",
+      icon: <Globe className="w-6 h-6 text-grey-400" />,
+      type: "live",
+      category: "Web",
+      featured: true,
+      pinned: true,
+    },
+    {
+      title: "Game Starr Group LLC",
+      description: "Live Streaming Platform for Games, Community, Live Streaming",
+      techStack: "Next.js, Tailwind, Discord, MongoDB, Socket.io",
       link: "https://www.twistercityexteriors.com/",
       icon: <Globe className="w-6 h-6 text-grey-400" />,
       type: "live",
@@ -115,7 +126,6 @@ export default function Projects() {
       icon: <Code className="w-6 h-6 text-green-400" />,
       type: "live",
       category: "Web",
-      featured: true,
       pinned: true,
     },
     {
@@ -126,7 +136,6 @@ export default function Projects() {
       icon: <Code className="w-6 h-6 text-coral-400" />,
       type: "live",
       category: "Web",
-      featured: true,
       pinned: true,
     },
     {
@@ -146,8 +155,6 @@ export default function Projects() {
       icon: <Code className="w-6 h-6 text-coral-400" />,
       type: "live",
       category: "Web",
-      featured: true,
-      pinned: true,
     },
     // FiveM Projects
     {
