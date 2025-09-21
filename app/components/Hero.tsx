@@ -377,7 +377,7 @@ export default function Hero() {
             transition={{ delay: 1 }}
           >
             <a
-              href="https://drive.google.com/file/d/1Ke-5ox0q9Q_9lmamYVlcsJANbfLfgPuk/view?usp=drive_link"
+              href="https://drive.google.com/file/d/1PDnV7QDS9tpVuYlCXaAR5McRt2fyli84/view?usp=sharing"
               target="_blank"
               rel="noopener noreferrer"
               className="px-8 py-3 bg-coral-400 hover:bg-coral-500 text-navy-700 rounded-full transition-all duration-300 flex items-center justify-center gap-2 font-medium"
