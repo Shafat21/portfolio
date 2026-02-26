@@ -34,8 +34,6 @@ export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const [activeSection, setActiveSection] = useState("hero")
   const [showScrollTop, setShowScrollTop] = useState(false)
-  const [isVisible, setIsVisible] = useState(true)
-  const lastScrollY = useRef(0)
   const observer = useRef<IntersectionObserver | null>(null)
 
   useEffect(() => {
@@ -48,13 +46,6 @@ export default function Navigation() {
     const handleScroll = () => {
       const currentScrollY = window.scrollY
       setShowScrollTop(currentScrollY > 500)
-
-      if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
-        setIsVisible(false) // Scrolling down
-      } else {
-        setIsVisible(true) // Scrolling up
-      }
-      lastScrollY.current = currentScrollY
     }
 
     window.addEventListener("scroll", handleScroll, { passive: true })
@@ -109,11 +100,11 @@ export default function Navigation() {
         <motion.nav
           initial={{ y: -100, opacity: 0 }}
           animate={{
-            y: isVisible ? 0 : -100,
-            opacity: isVisible ? 1 : 0
+            y: 0,
+            opacity: 1
           }}
           transition={{ duration: 0.3 }}
-          className={`pointer-events-auto flex items-center bg-navy-800/60 backdrop-blur-xl border border-coral-400/20 rounded-full px-2 py-2 shadow-2xl transition-all duration-500`}
+          className={`pointer-events-auto flex items-center bg-navy-800/60 backdrop-blur-xl border border-coral-400/20 rounded-full px-2 py-2 shadow-2xl`}
         >
           {/* Logo / Home Button */}
           <button
