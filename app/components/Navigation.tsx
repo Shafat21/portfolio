@@ -34,39 +34,65 @@ export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const [activeSection, setActiveSection] = useState("hero")
   const [showScrollTop, setShowScrollTop] = useState(false)
+  const [isVisible, setIsVisible] = useState(true)
+  const lastScrollY = useRef(0)
   const observer = useRef<IntersectionObserver | null>(null)
 
   useEffect(() => {
-    const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 500)
+    // Initial scroll to hash if present
+    const hash = window.location.hash.replace("#", "")
+    if (hash && navItems.map(item => item.id).includes(hash)) {
+      setTimeout(() => smoothScrollTo(hash), 500)
     }
 
-    window.addEventListener("scroll", handleScroll)
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+      setShowScrollTop(currentScrollY > 500)
+
+      if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
+        setIsVisible(false) // Scrolling down
+      } else {
+        setIsVisible(true) // Scrolling up
+      }
+      lastScrollY.current = currentScrollY
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true })
     handleScroll()
 
     // Intersection Observer for active section
     const observerOptions = {
       root: null,
-      rootMargin: "-20% 0px -70% 0px", // Focus on top-ish part of the screen
+      rootMargin: "-30% 0px -40% 0px", // More focused area for triggering
       threshold: 0,
     }
 
     observer.current = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          setActiveSection(entry.target.id)
+          const sectionId = entry.target.id
+          setActiveSection(sectionId)
+
+          // Update URL hash without jumping
+          if (window.location.hash !== `#${sectionId}`) {
+            window.history.replaceState(null, "", `#${sectionId}`)
+          }
         }
       })
     }, observerOptions)
 
-    navItems.forEach((item) => {
-      const element = document.getElementById(item.id)
-      if (element) observer.current?.observe(element)
-    })
+    // Using a small timeout to ensure sections are rendered
+    const timeoutId = setTimeout(() => {
+      navItems.forEach((item) => {
+        const element = document.getElementById(item.id)
+        if (element) observer.current?.observe(element)
+      })
+    }, 1000)
 
     return () => {
       window.removeEventListener("scroll", handleScroll)
       observer.current?.disconnect()
+      clearTimeout(timeoutId)
     }
   }, [])
 
@@ -82,7 +108,11 @@ export default function Navigation() {
       <div className="fixed top-6 left-0 right-0 z-50 px-6 flex justify-center pointer-events-none">
         <motion.nav
           initial={{ y: -100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
+          animate={{
+            y: isVisible ? 0 : -100,
+            opacity: isVisible ? 1 : 0
+          }}
+          transition={{ duration: 0.3 }}
           className={`pointer-events-auto flex items-center bg-navy-800/60 backdrop-blur-xl border border-coral-400/20 rounded-full px-2 py-2 shadow-2xl transition-all duration-500`}
         >
           {/* Logo / Home Button */}
