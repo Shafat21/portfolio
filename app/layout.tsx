@@ -38,7 +38,7 @@ export const metadata = {
     "Bot Automation",
     "Portfolio Website Developer"
   ],
-  authors: [{ name: "Shafat Alam", url: "https://shafat21.dragondesignstudio.com" }],
+  authors: [{ name: "Shafat Alam", url: "https://shafat21.online" }],
   creator: "Shafat Alam",
   publisher: "Shafat Alam",
   icons: {
@@ -49,7 +49,7 @@ export const metadata = {
     title: "Shafat Alam | Full Stack Web & Game Development Services",
     description:
       "View the professional portfolio of Shafat Alam – expert in FiveM scripting, Discord bot automation, modern web design, and more.",
-    url: "https://shafat21.dragondesignstudio.com",
+    url: "https://shafat21.online",
     siteName: "Shafat21 Portfolio",
     images: [
       {
@@ -68,16 +68,16 @@ export const metadata = {
     description:
       "Offering full stack development services including custom bots, gaming scripts, and responsive web design.",
     images: ["/og-image.png"],
-    creator: "@shafatdev", // update if applicable
+    creator: "@shafat21", // update if applicable
   },
-  metadataBase: new URL("https://shafat21.dragondesignstudio.com"),
+  metadataBase: new URL("https://shafat21.online"),
   robots: {
     index: true,
     follow: true,
     nocache: false,
   },
   alternates: {
-    canonical: "https://shafat21.dragondesignstudio.com",
+    canonical: "https://shafat21.online",
   },
 }
 
@@ -88,7 +88,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning className="scroll-smooth">
-      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans bg-navy-700 text-lightgray-100`}>
+      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans bg-navy-700 text-lightgray-100`} suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <Navigation />
           {children}

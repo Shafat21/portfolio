@@ -1,61 +1,74 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Menu, X, Home, User, Briefcase, Code, GraduationCap, MessageSquare, Cpu, ChevronUp, Car } from "lucide-react"
+import {
+  Menu,
+  X,
+  Home,
+  User,
+  Briefcase,
+  Code,
+  GraduationCap,
+  MessageSquare,
+  Cpu,
+  ChevronUp,
+  Car,
+  Star
+} from "lucide-react"
 import { smoothScrollTo } from "@/utils/smoothScroll"
+
+const navItems = [
+  { id: "hero", label: "Home", icon: Home },
+  { id: "about", label: "About", icon: User },
+  { id: "experience", label: "Experience", icon: Briefcase },
+  { id: "skills", label: "Skills", icon: Code },
+  { id: "fivem", label: "FiveM", icon: Car },
+  { id: "projects", label: "Projects", icon: Cpu },
+  { id: "testimonials", label: "Reviews", icon: Star },
+  { id: "education", label: "Education", icon: GraduationCap },
+  { id: "contact", label: "Contact", icon: MessageSquare },
+]
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const [activeSection, setActiveSection] = useState("hero")
-  const [scrollY, setScrollY] = useState(0)
   const [showScrollTop, setShowScrollTop] = useState(false)
-
-  const navItems = [
-    { id: "hero", label: "Home", icon: <Home className="w-5 h-5" /> },
-    { id: "about", label: "About", icon: <User className="w-5 h-5" /> },
-    { id: "experience", label: "Experience", icon: <Briefcase className="w-5 h-5" /> },
-    { id: "skills", label: "Skills", icon: <Code className="w-5 h-5" /> },
-    { id: "fivem", label: "FiveM", icon: <Car className="w-5 h-5" /> },
-    { id: "projects", label: "Projects", icon: <Cpu className="w-5 h-5" /> },
-    { id: "education", label: "Education", icon: <GraduationCap className="w-5 h-5" /> },
-    { id: "contact", label: "Contact", icon: <MessageSquare className="w-5 h-5" /> },
-  ]
+  const observer = useRef<IntersectionObserver | null>(null)
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrollY(window.scrollY)
       setShowScrollTop(window.scrollY > 500)
-
-      // Determine active section based on scroll position
-      const sections = navItems.map((item) => item.id)
-
-      // Find the section that is currently in view
-      let currentSection = activeSection
-
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const section = sections[i]
-        const element = document.getElementById(section)
-
-        if (element) {
-          const rect = element.getBoundingClientRect()
-          // Consider a section in view if its top is within the top half of the viewport
-          if (rect.top <= window.innerHeight / 2) {
-            currentSection = section
-            break
-          }
-        }
-      }
-
-      setActiveSection(currentSection)
     }
 
     window.addEventListener("scroll", handleScroll)
-    // Initial check
     handleScroll()
 
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [navItems])
+    // Intersection Observer for active section
+    const observerOptions = {
+      root: null,
+      rootMargin: "-20% 0px -70% 0px", // Focus on top-ish part of the screen
+      threshold: 0,
+    }
+
+    observer.current = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id)
+        }
+      })
+    }, observerOptions)
+
+    navItems.forEach((item) => {
+      const element = document.getElementById(item.id)
+      if (element) observer.current?.observe(element)
+    })
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll)
+      observer.current?.disconnect()
+    }
+  }, [])
 
   const handleNavClick = (id: string) => {
     smoothScrollTo(id)
@@ -65,131 +78,186 @@ export default function Navigation() {
 
   return (
     <>
-      {/* Fixed Header */}
-      <motion.header
-        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-        initial={{ y: -100 }}
-        animate={{
-          y: 0,
-          backgroundColor: scrollY > 50 ? "rgba(42, 71, 89, 0.9)" : "rgba(42, 71, 89, 0.4)",
-        }}
-        style={{ backdropFilter: "blur(10px)" }}
-      >
-        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <motion.div
-            className="text-2xl font-bold text-lightgray-100 font-display"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
+      {/* Floating Center Dock Navigation */}
+      <div className="fixed top-6 left-0 right-0 z-50 px-6 flex justify-center pointer-events-none">
+        <motion.nav
+          initial={{ y: -100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className={`pointer-events-auto flex items-center bg-navy-800/60 backdrop-blur-xl border border-coral-400/20 rounded-full px-2 py-2 shadow-2xl transition-all duration-500`}
+        >
+          {/* Logo / Home Button */}
+          <button
+            onClick={() => handleNavClick("hero")}
+            className="hidden lg:flex items-center gap-3 px-4 py-2 mr-2 group"
           >
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-coral-400 to-coral-500">
-              DevShafat
-            </span>
-          </motion.div>
+            <div className="relative w-10 h-10 group-hover:scale-110 transition-transform duration-300">
+              <div className="absolute inset-0 bg-gradient-to-br from-coral-400 to-coral-600 rounded-xl blur-sm opacity-50 group-hover:opacity-100 transition-opacity" />
+              <div className="relative w-full h-full bg-navy-900 rounded-xl border border-coral-400/30 flex items-center justify-center overflow-hidden">
+                <img
+                  src="/logo.png"
+                  alt="DevShafat Logo"
+                  className="w-8 h-8 object-contain"
+                  onError={(e) => {
+                    // Fallback if logo fails
+                    e.currentTarget.style.display = 'none'
+                    const parent = e.currentTarget.parentElement
+                    if (parent) {
+                      parent.innerHTML = '<span class="text-coral-400 font-black text-2xl">S</span>'
+                    }
+                  }}
+                />
+              </div>
+            </div>
+            <div className="flex flex-col items-start leading-none">
+              <span className="text-xl font-black tracking-tighter text-lightgray-100 group-hover:text-coral-400 transition-colors">
+                Dev<span className="text-coral-400 group-hover:text-lightgray-100">Shafat</span>
+              </span>
+              <span className="text-[8px] uppercase tracking-[0.3em] text-coral-400/60 font-bold">Portfolio</span>
+            </div>
+          </button>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:block">
-            <ul className="flex items-center gap-1">
-              {navItems.map((item) => (
-                <motion.li key={item.id} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+          <div className="h-6 w-px bg-coral-400/20 mx-2 hidden lg:block" />
+
+          {/* Desktop Items */}
+          <ul className="hidden md:flex items-center gap-1">
+            {navItems.map((item) => {
+              const Icon = item.icon
+              const isActive = activeSection === item.id
+              return (
+                <li key={item.id}>
                   <button
                     onClick={() => handleNavClick(item.id)}
-                    className={`relative px-3 py-2 rounded-full flex items-center gap-2 transition-colors ${
-                      activeSection === item.id
-                        ? "text-navy-700 bg-coral-400"
-                        : "text-lightgray-300 hover:text-lightgray-100 hover:bg-navy-600"
-                    }`}
+                    className={`relative px-4 py-2 rounded-full flex items-center gap-2 transition-all group overflow-hidden ${isActive ? "text-navy-700" : "text-lightgray-300 hover:text-coral-400"
+                      }`}
                   >
-                    {item.icon}
-                    <span className="text-sm">{item.label}</span>
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeDock"
+                        className="absolute inset-0 bg-coral-400"
+                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      />
+                    )}
+                    <Icon className={`w-4 h-4 relative z-10 ${isActive ? "text-navy-700" : ""}`} />
+                    <span className="text-xs font-bold relative z-10">{item.label}</span>
                   </button>
-                </motion.li>
-              ))}
-            </ul>
-          </nav>
+                </li>
+              )
+            })}
+          </ul>
 
-          {/* Mobile Navigation Toggle */}
-          <motion.button
-            className="md:hidden bg-navy-600 p-3 rounded-full shadow-lg"
-            onClick={() => setIsOpen(!isOpen)}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </motion.button>
-        </div>
-      </motion.header>
+          {/* Mobile Items Mini Version */}
+          <div className="md:hidden flex items-center gap-2 px-2">
+            <button
+              onClick={() => handleNavClick("hero")}
+              className={`p-2 rounded-full ${activeSection === "hero" ? "bg-coral-400 text-navy-700" : "text-lightgray-100"}`}
+            >
+              <Home className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => setIsOpen(true)}
+              className="bg-coral-400/10 p-2 rounded-full text-coral-400 border border-coral-400/20"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+          </div>
+        </motion.nav>
+      </div>
 
-      {/* Mobile Navigation Menu */}
+      {/* Mobile Full Screen Menu */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed inset-0 z-40 bg-navy-700/95 backdrop-blur-md md:hidden pt-20"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-50 bg-navy-900/95 backdrop-blur-2xl flex flex-col p-8 sm:p-12 md:hidden"
           >
-            <motion.ul
-              className="flex flex-col items-center justify-center h-full gap-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-            >
-              {navItems.map((item, index) => (
-                <motion.li
-                  key={item.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 + index * 0.1 }}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <button
-                    onClick={() => handleNavClick(item.id)}
-                    className={`text-2xl font-medium flex items-center gap-3 ${
-                      activeSection === item.id ? "text-coral-400" : "text-lightgray-300"
-                    }`}
-                  >
-                    {item.icon}
-                    {item.label}
-                  </button>
-                </motion.li>
-              ))}
-            </motion.ul>
+            <div className="flex justify-between items-center mb-12">
+              <div className="flex items-center gap-3">
+                <div className="relative w-10 h-10 bg-navy-900 rounded-xl border border-coral-400/30 flex items-center justify-center overflow-hidden">
+                  <img
+                    src="/android-chrome-512x512.png"
+                    alt="DevShafat Logo"
+                    className="w-6 h-6 object-contain filter brightness-0 invert"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none'
+                      e.currentTarget.parentElement!.innerHTML = '<span class="text-coral-400 font-black text-xl">D</span>'
+                    }}
+                  />
+                </div>
+                <span className="text-2xl font-black text-lightgray-100 tracking-tighter">
+                  Dev<span className="text-coral-400">Shafat</span>
+                </span>
+              </div>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="w-12 h-12 rounded-2xl bg-coral-400/10 border border-coral-400/20 flex items-center justify-center text-coral-400"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <nav className="flex-1">
+              <ul className="space-y-4">
+                {navItems.map((item, index) => {
+                  const Icon = item.icon
+                  const isActive = activeSection === item.id
+                  return (
+                    <motion.li
+                      key={item.id}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                    >
+                      <button
+                        onClick={() => handleNavClick(item.id)}
+                        className={`group w-full flex items-center justify-between p-4 rounded-2xl border transition-all ${isActive
+                          ? "bg-coral-400 border-coral-500 shadow-lg shadow-coral-400/20"
+                          : "bg-navy-800/50 border-navy-700 hover:border-coral-400/30"
+                          }`}
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${isActive ? "bg-navy-700/20" : "bg-navy-700 group-hover:bg-coral-400/20"
+                            }`}>
+                            <Icon className={`w-5 h-5 ${isActive ? "text-navy-700" : "text-coral-400"}`} />
+                          </div>
+                          <span className={`text-lg font-bold ${isActive ? "text-navy-700" : "text-lightgray-100"}`}>
+                            {item.label}
+                          </span>
+                        </div>
+                        <div className={`w-2 h-2 rounded-full ${isActive ? "bg-navy-700" : "bg-coral-400/20"}`} />
+                      </button>
+                    </motion.li>
+                  )
+                })}
+              </ul>
+            </nav>
+
+            <div className="pt-8 border-t border-navy-800 mt-auto">
+              <p className="text-lightgray-300/40 text-xs font-mono uppercase tracking-widest text-center">
+                Built with passion & code
+              </p>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Scroll to top button */}
+      {/* Premium Scroll to Top */}
       <AnimatePresence>
         {showScrollTop && (
           <motion.button
             onClick={() => smoothScrollTo("hero")}
-            className="fixed bottom-8 right-8 z-40 bg-coral-400 hover:bg-coral-500 text-navy-700 p-3 rounded-full shadow-lg"
-            initial={{ opacity: 0, scale: 0, rotate: -180 }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-              rotate: 0,
-              boxShadow: [
-                "0 4px 6px rgba(247, 155, 114, 0.2)",
-                "0 4px 15px rgba(247, 155, 114, 0.4)",
-                "0 4px 6px rgba(247, 155, 114, 0.2)",
-              ],
-            }}
-            exit={{ opacity: 0, scale: 0, rotate: 180 }}
-            transition={{
-              duration: 0.3,
-              boxShadow: {
-                repeat: Number.POSITIVE_INFINITY,
-                duration: 2,
-              },
-            }}
-            whileHover={{ scale: 1.1 }}
+            className="fixed bottom-8 right-8 z-40 w-14 h-14 bg-coral-400 hover:bg-coral-500 text-navy-700 rounded-2xl shadow-2xl flex items-center justify-center group overflow-hidden"
+            initial={{ y: 100, rotate: 180, scale: 0 }}
+            animate={{ y: 0, rotate: 0, scale: 1 }}
+            exit={{ y: 100, rotate: -180, scale: 0 }}
+            whileHover={{ y: -5 }}
             whileTap={{ scale: 0.9 }}
           >
-            <ChevronUp className="w-6 h-6" />
+            <motion.div
+              className="absolute inset-0 bg-white/20 -translate-y-full group-hover:translate-y-0 transition-transform duration-300"
+            />
+            <ChevronUp className="w-6 h-6 relative z-10" />
           </motion.button>
         )}
       </AnimatePresence>

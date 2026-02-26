@@ -1,175 +1,138 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { useState, useEffect } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import { Briefcase, Calendar, MapPin, Zap } from "lucide-react"
 import SectionHeading from "./SectionHeading"
+import { supabase } from "@/lib/supabase/client"
+import type { Database } from "@/lib/supabase/database.types"
+
+type Experience = Database["public"]["Tables"]["experience"]["Row"]
 
 export default function Experience() {
-  const experiences = [
-    {
-      period: "Present",
-      role: "Project Manager",
-      company: "Al Quran Institute",
-      website: "alquraninstitute.net",
-      color: "coral",
-      projects: [
-        {
-          title: "🌐 Website Management & Development",
-          description:
-            "Managing the institute's website, overseeing content updates, user registrations, and technical support for online Quran study courses.",
-        },
-        {
-          title: "📱 Course Registration System",
-          description:
-            "Implementing and maintaining the online registration system for various modules and courses offered by the institute.",
-        },
-        {
-          title: "📋 Project Coordination & Team Management",
-          description:
-            "Coordinating between technical teams and educational staff to ensure smooth operation of the online learning platform.",
-        },
-      ],
-    },
-    {
-      period: "Present",
-      role: "Web Developer",
-      company: "BrightBrainAI",
-      website: "brightbrainai.com",
-      color: "lightgray",
-      projects: [
-        {
-          title: "🌐 AI-Powered Web Applications",
-          description:
-            "Developing web applications with AI integration, focusing on user experience and modern design principles.",
-        },
-        {
-          title: "🛠️ Frontend Development",
-          description:
-            "Building responsive and interactive user interfaces using modern JavaScript frameworks and libraries.",
-        },
-        {
-          title: "🔄 API Integration",
-          description: "Implementing API connections between frontend applications and backend AI services.",
-        },
-      ],
-    },
-    {
-      period: "Oct 2020 - Feb 2021",
-      role: "Front-end Developer Intern",
-      company: "Dragon Design Studio",
-      website: "dragondesignstudio.com",
-      color: "coral",
-      projects: [
-        {
-          title: "🎨 UI Development",
-          description:
-            "Assisted in developing user interfaces for client websites, focusing on responsive design and cross-browser compatibility.",
-        },
-        {
-          title: "🖼️ Web Design Implementation",
-          description: "Converted design mockups into functional web pages using HTML, CSS, and JavaScript.",
-        },
-        {
-          title: "🔍 Quality Assurance",
-          description:
-            "Participated in testing and debugging web applications to ensure optimal performance and user experience.",
-        },
-      ],
-    },
-  ]
+  const [experiences, setExperiences] = useState<Experience[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchExperiences = async () => {
+      setLoading(true)
+      try {
+        const { data, error } = await supabase
+          .from("experience")
+          .select("*")
+          .order("order_index", { ascending: true })
+
+        if (error) throw error
+        setExperiences(data || [])
+      } catch (error) {
+        console.error("Error fetching experience:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchExperiences()
+  }, [])
+
+  const formatDateRange = (startDate: string, endDate: string | null, current: boolean) => {
+    const formatDate = (dateStr: string) => {
+      const date = new Date(dateStr)
+      return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+    }
+    const start = formatDate(startDate)
+    const end = current ? 'Present' : (endDate ? formatDate(endDate) : 'Present')
+    return `${start} - ${end}`
+  }
 
   return (
-    <section id="experience" className="py-20 relative overflow-hidden bg-navy-700">
-      {/* Background elements */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-coral-400/10 via-navy-700 to-navy-800 z-0"></div>
+    <section id="experience" className="py-24 relative overflow-hidden bg-navy-700">
+      {/* Background Ambience */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-coral-400/20 to-transparent z-10"></div>
 
       <div className="container mx-auto px-6 relative z-10">
         <SectionHeading title="Experience" />
 
-        <div className="max-w-5xl mx-auto">
-          {experiences.map((exp, index) => (
-            <motion.div
-              key={index}
-              className="mb-12 relative"
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-            >
-              {/* Timeline connector */}
-              {index < experiences.length - 1 && (
-                <div className="absolute top-16 bottom-0 left-8 w-0.5 bg-gradient-to-b from-coral-400 to-lightgray-300">
+        <div className="max-w-4xl mx-auto mt-16 relative">
+          {/* Main Timeline Backbone */}
+          <div className="absolute left-0 md:left-1/2 md:-translate-x-px top-0 bottom-0 w-[2px] bg-gradient-to-b from-coral-400/50 via-navy-800 to-transparent hidden sm:block"></div>
+
+          {loading ? (
+            <div className="flex items-center justify-center py-20">
+              <div className="w-8 h-8 border-2 border-coral-400 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          ) : (
+            <div className="space-y-12 md:space-y-24">
+              {experiences.map((exp, index) => {
+                const isEven = index % 2 === 0
+                return (
                   <motion.div
-                    className="absolute top-0 left-1/2 transform -translate-x-1/2 w-3 h-3 rounded-full bg-lightgray-100"
-                    animate={{
-                      y: [0, 100, 200, 300, 400],
-                      opacity: [1, 0.8, 0.6, 0.4, 0],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Number.POSITIVE_INFINITY,
-                      ease: "linear",
-                    }}
-                  />
-                </div>
-              )}
-
-              <div className="flex items-start">
-                {/* Timeline dot */}
-                <div className="relative">
-                  <div className="w-16 h-16 rounded-full bg-navy-800 flex items-center justify-center z-10 relative border border-coral-400/30">
-                    <Briefcase className={`w-8 h-8 text-${exp.color}-400`} />
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="ml-8 bg-navy-800/80 backdrop-blur-md p-6 rounded-2xl border border-coral-400/20 flex-1">
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                    <h3 className="text-2xl font-bold text-lightgray-100 flex items-center gap-2 font-display">
-                      <Zap className={`w-5 h-5 text-${exp.color}-400`} />
-                      {exp.role}
-                    </h3>
-                    <div className="flex items-center text-coral-400 mt-2 md:mt-0">
-                      <Calendar className="w-4 h-4 mr-1" />
-                      <span>{exp.period}</span>
+                    key={exp.id}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ duration: 0.8, delay: index * 0.1 }}
+                    className={`relative flex items-center justify-between md:flex-row ${isEven ? "md:flex-row-reverse" : ""
+                      } flex-col group`}
+                  >
+                    {/* Timeline Node */}
+                    <div className="absolute left-0 md:left-1/2 md:-translate-x-1/2 top-0 md:top-1/2 md:-translate-y-1/2 z-20 hidden sm:block">
+                      <div className={`w-4 h-4 rounded-full border-2 ${exp.current ? 'bg-coral-400 border-white shadow-[0_0_15px_rgba(247,155,114,0.8)] animate-pulse' : 'bg-navy-800 border-coral-400'} group-hover:scale-125 transition-transform duration-300`}></div>
                     </div>
-                  </div>
 
-                  <div className="flex items-center mb-6">
-                    <MapPin className="w-4 h-4 text-lightgray-300 mr-1" />
-                    <span className="text-lightgray-300">{exp.company}</span>
-                    {exp.website && (
-                      <a
-                        href={`https://${exp.website}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="ml-2 text-coral-400 hover:text-coral-300 transition-colors"
-                      >
-                        ({exp.website})
-                      </a>
-                    )}
-                  </div>
+                    {/* Content Card */}
+                    <div className="w-full md:w-[45%] pl-10 md:pl-0">
+                      <div className={`p-8 rounded-[2rem] border border-white/5 bg-navy-800/40 backdrop-blur-xl group-hover:border-coral-400/30 transition-all duration-500 relative overflow-hidden`}>
+                        {/* Glow Overlay */}
+                        <div className="absolute -inset-20 bg-[radial-gradient(circle_at_center,_rgba(247,155,114,0.05),transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
 
-                  <div className="space-y-4">
-                    {exp.projects.map((project, i) => (
-                      <motion.div
-                        key={i}
-                        className="bg-navy-700/50 p-4 rounded-xl border border-navy-600/50 group hover:border-coral-400/30 transition-colors duration-300"
-                        whileHover={{ x: 5 }}
-                        initial={{ opacity: 0, x: -20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.3, delay: i * 0.1 + 0.2 }}
-                      >
-                        <h4 className="text-lg font-semibold text-lightgray-100 mb-2">{project.title}</h4>
-                        <p className="text-lightgray-300">{project.description}</p>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+                        <div className="relative z-10">
+                          <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+                            <span className="text-[10px] uppercase tracking-[0.3em] text-coral-400 font-bold px-3 py-1 bg-coral-400/10 rounded-full border border-coral-400/20">
+                              {formatDateRange(exp.start_date, exp.end_date, exp.current)}
+                            </span>
+                            {exp.current && (
+                              <span className="flex items-center gap-1.5 text-[10px] uppercase font-bold text-green-400 px-3 py-1 bg-green-400/10 rounded-full">
+                                <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+                                Currently Engaged
+                              </span>
+                            )}
+                          </div>
+
+                          <h3 className="text-2xl font-black text-lightgray-100 mb-1 group-hover:text-coral-400 transition-colors">
+                            {exp.position}
+                          </h3>
+                          <div className="text-lightgray-300 text-sm font-bold flex items-center gap-2 mb-6">
+                            <MapPin className="w-3 h-3 text-coral-400" />
+                            {exp.company} {exp.location && `• ${exp.location}`}
+                          </div>
+
+                          <p className="text-lightgray-300 text-sm font-light leading-relaxed mb-6 opacity-80 group-hover:opacity-100 transition-opacity">
+                            {exp.description}
+                          </p>
+
+                          {exp.technologies && exp.technologies.length > 0 && (
+                            <div className="flex flex-wrap gap-2">
+                              {exp.technologies.map((tech, i) => (
+                                <span
+                                  key={i}
+                                  className="text-[9px] font-mono uppercase tracking-widest px-2 py-0.5 rounded-md bg-navy-900/50 border border-white/5 text-lightgray-400 group-hover:border-coral-400/20 group-hover:text-lightgray-100 transition-all"
+                                >
+                                  {tech}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Spacer for Desktop Grid */}
+                    <div className="hidden md:block w-[45%]"></div>
+                  </motion.div>
+                )
+              })}
+            </div>
+          )}
         </div>
       </div>
     </section>

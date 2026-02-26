@@ -1,10 +1,9 @@
-"use client"
-
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import * as THREE from "three"
 
 export default function ThreeScene() {
   const containerRef = useRef<HTMLDivElement>(null)
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -12,15 +11,12 @@ export default function ThreeScene() {
     // Scene setup
     const scene = new THREE.Scene()
 
-    // Camera setup
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+    // Camera setup - initial dummy aspect, will fix in handleResize
+    const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000)
     camera.position.z = 5
 
     // Renderer setup
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true })
-    renderer.setSize(window.innerWidth, window.innerHeight)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-    containerRef.current.appendChild(renderer.domElement)
 
     // Create a group to hold all objects
     const group = new THREE.Group()
@@ -51,7 +47,6 @@ export default function ThreeScene() {
       return cube
     }
 
-    // Create multiple cubes
     const cubes = [
       createCube(-2, 1, 0, "#3b82f6"),
       createCube(2, -1, 1, "#8b5cf6"),
@@ -60,70 +55,78 @@ export default function ThreeScene() {
       createCube(1.5, 1.5, 0.5, "#ec4899"),
     ]
 
-    // Add ambient light
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
     scene.add(ambientLight)
 
-    // Add directional light
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1)
     directionalLight.position.set(1, 2, 3)
     scene.add(directionalLight)
 
-    // Handle window resize
-    const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight
+    const updateSize = () => {
+      if (!containerRef.current) return
+      const width = containerRef.current.clientWidth || window.innerWidth
+      const height = containerRef.current.clientHeight || window.innerHeight
+
+      camera.aspect = width / height
       camera.updateProjectionMatrix()
-      renderer.setSize(window.innerWidth, window.innerHeight)
+      renderer.setSize(width, height)
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     }
 
-    window.addEventListener("resize", handleResize)
+    // Initial size setup
+    updateSize()
+    containerRef.current.appendChild(renderer.domElement)
 
-    // Mouse movement effect
+    window.addEventListener("resize", updateSize)
+
     const mouse = new THREE.Vector2()
-
     const handleMouseMove = (event: MouseEvent) => {
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1
       mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
     }
-
     window.addEventListener("mousemove", handleMouseMove)
 
-    // Animation loop
     const clock = new THREE.Clock()
+    let animationFrameId: number
 
     const animate = () => {
       const elapsedTime = clock.getElapsedTime()
-
-      // Rotate the entire group slightly based on mouse position
       group.rotation.y = mouse.x * 0.5
       group.rotation.x = mouse.y * 0.5
 
-      // Animate each cube individually
       cubes.forEach((cube) => {
         const data = cube.userData
-
-        // Rotation
         cube.rotation.x += data.rotationSpeed.x
         cube.rotation.y += data.rotationSpeed.y
         cube.rotation.z += data.rotationSpeed.z
-
-        // Floating effect
         cube.position.y += Math.sin(elapsedTime * data.floatSpeed + data.floatOffset) * 0.002 * data.floatDirection
       })
 
       renderer.render(scene, camera)
-      requestAnimationFrame(animate)
+
+      // Signal loaded after first frame
+      if (!isLoaded) setIsLoaded(true)
+
+      animationFrameId = requestAnimationFrame(animate)
     }
 
     animate()
 
-    // Cleanup
     return () => {
-      window.removeEventListener("resize", handleResize)
+      window.removeEventListener("resize", updateSize)
       window.removeEventListener("mousemove", handleMouseMove)
-      containerRef.current?.removeChild(renderer.domElement)
+      cancelAnimationFrame(animationFrameId)
+      if (containerRef.current && renderer.domElement.parentNode === containerRef.current) {
+        containerRef.current.removeChild(renderer.domElement)
+      }
+      renderer.dispose()
     }
   }, [])
 
-  return <div ref={containerRef} className="absolute inset-0 -z-10 pointer-events-none" />
+  return (
+    <div
+      ref={containerRef}
+      className={`absolute inset-0 -z-10 pointer-events-none transition-opacity duration-1000 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+    />
+  )
 }

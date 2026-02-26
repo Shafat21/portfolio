@@ -1,9 +1,5 @@
-"use client"
-
-import type React from "react"
-
-import { motion, AnimatePresence } from "framer-motion"
-import { useState } from "react"
+import React, { useState, useEffect } from "react"
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion"
 import {
   ExternalLink,
   Github,
@@ -20,239 +16,141 @@ import {
   Pill,
   Code,
   Brain,
+  Rocket,
+  ArrowRight
 } from "lucide-react"
 import SectionHeading from "./SectionHeading"
+import { supabase } from "@/lib/supabase/client"
+import type { Database } from "@/lib/supabase/database.types"
 
-// 3D Card effect component
-const Card3D = ({ children }: { children: React.ReactNode }) => {
-  const [rotateX, setRotateX] = useState(0)
-  const [rotateY, setRotateY] = useState(0)
+type Project = Database["public"]["Tables"]["projects"]["Row"]
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const card = e.currentTarget
-    const rect = card.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
-    const centerX = rect.width / 2
-    const centerY = rect.height / 2
-    const rotateXValue = (y - centerY) / 10
-    const rotateYValue = (centerX - x) / 10
+const iconMap: Record<string, any> = {
+  BookOpen, Brain, Globe, Code, Car, Heart, Users, Pill, Server, Flame, Rocket
+}
 
-    setRotateX(rotateXValue)
-    setRotateY(rotateYValue)
+const ProjectCard = ({ project, index }: { project: Project; index: number }) => {
+  const mouseX = useMotionValue(0)
+  const mouseY = useMotionValue(0)
+
+  function onMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
+    const { left, top } = currentTarget.getBoundingClientRect()
+    mouseX.set(clientX - left)
+    mouseY.set(clientY - top)
   }
 
-  const handleMouseLeave = () => {
-    setRotateX(0)
-    setRotateY(0)
-  }
+  const Icon = iconMap[project.icon_name || "Code"] || Code
 
   return (
     <motion.div
-      className="h-full perspective-1000"
-      style={{
-        transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
-        transition: "transform 0.1s ease",
-      }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      onMouseMove={onMouseMove}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+      className="group relative h-full"
     >
-      {children}
+      <div className="relative h-full p-8 rounded-[2.5rem] bg-navy-800/40 backdrop-blur-3xl border border-white/5 overflow-hidden transition-all duration-500 group-hover:border-coral-400/30 group-hover:-translate-y-2 group-hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)]">
+        {/* Holographic Light Reflection */}
+        <motion.div
+          className="pointer-events-none absolute -inset-px rounded-[2.5rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          style={{
+            background: useTransform(
+              [mouseX, mouseY],
+              ([x, y]) => `radial-gradient(600px circle at ${x}px ${y}px, rgba(247,155,114,0.08), transparent 80%)`
+            ),
+          }}
+        />
+
+        <div className="relative z-10 flex flex-col h-full">
+          <div className="flex items-start justify-between mb-8">
+            <div className="w-14 h-14 rounded-2xl bg-navy-900 border border-white/5 flex items-center justify-center text-coral-400 group-hover:scale-110 group-hover:text-lightgray-100 transition-all duration-500 shadow-inner">
+              <Icon className="w-7 h-7" />
+            </div>
+            <div className="flex flex-col items-end gap-2">
+              {project.pinned && (
+                <span className="px-3 py-1 rounded-full bg-coral-400/10 border border-coral-400/20 text-[9px] font-black uppercase tracking-widest text-coral-400 flex items-center gap-1.5">
+                  <div className="w-1 h-1 rounded-full bg-coral-400 animate-pulse"></div>
+                  Priority
+                </span>
+              )}
+              {project.featured && (
+                <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[9px] font-black uppercase tracking-widest text-lightgray-400 flex items-center gap-1.5">
+                  <Sparkles className="w-2.5 h-2.5" />
+                  Featured
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="flex-1">
+            <h3 className="text-2xl font-black text-lightgray-100 mb-3 tracking-tighter group-hover:text-coral-400 transition-colors">
+              {project.title}
+            </h3>
+            <p className="text-lightgray-300 text-sm font-medium leading-relaxed opacity-80 mb-6 line-clamp-3">
+              {project.description}
+            </p>
+
+            <div className="flex flex-wrap gap-2 mb-8">
+              {project.tech_stack?.split(",").map((tech, i) => (
+                <span key={i} className="text-[10px] font-mono font-bold uppercase tracking-widest px-2 py-1 rounded bg-navy-900/50 border border-white/5 text-lightgray-400 group-hover:text-lightgray-200 group-hover:border-coral-400/20 transition-all">
+                  {tech.trim()}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <a
+            href={project.link || project.github_link || "#"}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-between w-full p-4 rounded-xl bg-navy-900/80 border border-white/5 text-lightgray-100 group-hover:bg-coral-400 group-hover:text-navy-900 transition-all duration-500 font-black text-[10px] uppercase tracking-[0.2em]"
+          >
+            <span>Explore Project</span>
+            {project.type === "github" ? <Github className="w-4 h-4" /> : <ExternalLink className="w-4 h-4" />}
+          </a>
+        </div>
+      </div>
     </motion.div>
   )
 }
 
 export default function Projects() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
+  const [projects, setProjects] = useState<Project[]>([])
+  const [loading, setLoading] = useState(true)
 
   const categories = [
-    { id: "Web", label: "Web Apps", icon: <Globe className="w-4 h-4" /> },
-    { id: "FiveM", label: "FiveM", icon: <Car className="w-4 h-4" /> },
-    { id: "Python", label: "Python", icon: <FileCode className="w-4 h-4" /> },
-    { id: "IoT", label: "IoT", icon: <Laptop className="w-4 h-4" /> },
+    { id: "Web", label: "Web Apps", icon: Globe },
+    { id: "FiveM", label: "FiveM", icon: Car },
+    { id: "Python", label: "Python", icon: FileCode },
+    { id: "IoT", label: "IoT", icon: Laptop },
   ]
 
-  const projects = [
-    // Featured Live Projects
-    {
-      title: "Al Quran Institute",
-      description: "Educational platform for Quran studies with course registration and management",
-      techStack: "Next.js, Tailwind, Express, API",
-      link: "https://alquraninstitute.net/",
-      icon: <BookOpen className="w-6 h-6 text-coral-400" />,
-      type: "live",
-      category: "Web",
-      featured: true,
-      pinned: true,
-    },
-    {
-      title: "BrightBrainAI",
-      description: "AI-powered solutions platform with modern interface and interactive features",
-      techStack: "WordPress",
-      link: "https://brightbrainai.com/",
-      icon: <Brain className="w-6 h-6 text-lightgray-300" />,
-      type: "live",
-      category: "Web",
-      featured: true,
-      pinned: true,
-    },
-    {
-      title: "HeartLand Exteriors Twister City LLC",
-      description: "Full Service Exteriors & General Contracting Crew For Builders of all Kinds",
-      techStack: "Next.js, Tailwind, JSON, SQLite",
-      link: "https://www.twistercityexteriors.com/",
-      icon: <Globe className="w-6 h-6 text-grey-400" />,
-      type: "live",
-      category: "Web",
-      featured: true,
-      pinned: true,
-    },
-    {
-      title: "Game Starr Group LLC",
-      description: "Live Streaming Platform for Games, Community, Live Streaming",
-      techStack: "Next.js, Tailwind, Discord, MongoDB, Socket.io",
-      link: "https://www.twistercityexteriors.com/",
-      icon: <Globe className="w-6 h-6 text-grey-400" />,
-      type: "live",
-      category: "Web",
-      featured: true,
-      pinned: true,
-    },
-    {
-      title: "The Commonwealth RP - FiveM Roleplay Server",
-      description: "Are you looking to elevate your streaming content with a truly immersive, cinematic FiveM roleplay experience?",
-      techStack: "Next.js, Tailwind",
-      link: "https://thecommonwealthrp.com/",
-      icon: <Code className="w-6 h-6 text-green-400" />,
-      type: "live",
-      category: "Web",
-      pinned: true,
-    },
-    {
-      title: "The Reflection RP - Chinese FiveM Roleplay Server",
-      description: "This is Traditional Chinese - So No Description ",
-      techStack: "Next.js, Tailwind",
-      link: "https://www.dragon1688888.com/",
-      icon: <Code className="w-6 h-6 text-coral-400" />,
-      type: "live",
-      category: "Web",
-      pinned: true,
-    },
-    {
-      title: "BlazedRP - FiveM Roleplay Server",
-      description: "Experience next-level roleplay in our meticulously crafted world with custom jobs, properties, and a thriving economy.",
-      techStack: "Next.js, Tailwind",
-      link: "https://blazedrp.vercel.app/",
-      icon: <Code className="w-6 h-6 text-coral-400" />,
-      type: "live",
-      category: "Web",
-    },
-    {
-      title: "GSRP FiveM Website",
-      description: "Join Georgia State Role Play, a premier FiveM roleplay server featuring law enforcement, emergency services, and realistic civilian life.",
-      techStack: "Next.js, Tailwind, FiveM API",
-      link: "https://gsrp-three.vercel.app/",
-      icon: <Code className="w-6 h-6 text-coral-400" />,
-      type: "live",
-      category: "Web",
-    },
-    // FiveM Projects
-    {
-      title: "Lunar Contact Admin",
-      description: "Admin panel for managing player donations and experience in FiveM servers",
-      techStack: "Lua, JavaScript, ox_lib",
-      link: "https://github.com/Shafat21/Lunar-Contact-Admin",
-      icon: <Car className="w-6 h-6 text-coral-400" />,
-      type: "github",
-      category: "FiveM",
-      featured: true,
-    },
-    {
-      title: "Ambulance Job System",
-      description: "Comprehensive ambulance job and EMS system for FiveM roleplay servers",
-      techStack: "Lua, JavaScript, ESX Framework",
-      link: "https://github.com/Shafat21/shafat_ambulancejob",
-      icon: <Heart className="w-6 h-6 text-coral-400" />,
-      type: "github",
-      category: "FiveM",
-    },
-    {
-      title: "Hen Hunting System",
-      description: "Hunting system with realistic mechanics for FiveM roleplay servers",
-      techStack: "Lua, JavaScript, QBCore",
-      link: "https://github.com/Shafat21/shafat_henhunting",
-      icon: <Car className="w-6 h-6 text-coral-400" />,
-      type: "github",
-      category: "FiveM",
-    },
-    {
-      title: "smAidoc",
-      description: "Medical documentation and healthcare system for FiveM roleplay servers",
-      techStack: "Lua, JavaScript, ESX Framework",
-      link: "https://github.com/Shafat21/smAidoc",
-      icon: <Car className="w-6 h-6 text-coral-400" />,
-      type: "github",
-      category: "FiveM",
-    },
+  useEffect(() => {
+    const fetchProjects = async () => {
+      setLoading(true)
+      try {
+        const { data, error } = await supabase
+          .from("projects")
+          .select("*")
+          .order("order_index", { ascending: true })
 
-    // Web Projects
-    {
-      title: "Blogging Website",
-      description: "Full-featured blogging platform with user authentication and content management",
-      techStack: "React.js, Firebase, MongoDB",
-      link: "https://github.com/Shafat21/Blogging-Website-with-ReactJS",
-      icon: <BookOpen className="w-6 h-6 text-lightgray-300" />,
-      type: "github",
-      category: "Web",
-    },
-    {
-      title: "ProManage EMS",
-      description: "Employee Management System with comprehensive HR and administrative features",
-      techStack: "PHP, MySQL, Bootstrap",
-      link: "https://github.com/Shafat21/ProManage",
-      icon: <Users className="w-6 h-6 text-coral-400" />,
-      type: "github",
-      category: "Web",
-    },
-    {
-      title: "Pharmacy Management",
-      description: "Inventory and sales management system for pharmacies with CRUD operations",
-      techStack: "React.js, Node.js, MongoDB",
-      link: "https://github.com/Shafat21/React-Crud-Operation-Pharmacy-management",
-      icon: <Pill className="w-6 h-6 text-lightgray-300" />,
-      type: "github",
-      category: "Web",
-    },
+        if (error) throw error
+        setProjects(data || [])
+      } catch (error) {
+        console.error("Error fetching projects:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchProjects()
+  }, [])
 
-    // Python Projects
-    {
-      title: "FTP Client & Server",
-      description: "Custom implementation of FTP protocol with client and server components",
-      techStack: "Python, Socket Programming",
-      link: "https://github.com/Shafat21/FTP-Server-Client",
-      icon: <Server className="w-6 h-6 text-coral-400" />,
-      type: "github",
-      category: "Python",
-    },
-
-    // IoT Projects
-    {
-      title: "Smart Fire & Gas Detector",
-      description: "IoT-based system for detecting fire and gas leaks with real-time alerts",
-      techStack: "Arduino, Sensors, IoT Protocols",
-      link: "https://github.com/Shafat21/Smart-IoT-Fire-and-Gas-Detector",
-      icon: <Flame className="w-6 h-6 text-coral-400" />,
-      type: "github",
-      category: "IoT",
-    },
-  ]
-
-  // Sort projects to show pinned projects first, then featured, then the rest
   const sortedProjects = [...projects].sort((a, b) => {
     if (a.pinned && !b.pinned) return -1
     if (!a.pinned && b.pinned) return 1
     if (a.featured && !b.featured) return -1
-    if (!a.featured && b.featured) return 1
     return 0
   })
 
@@ -261,131 +159,53 @@ export default function Projects() {
     : sortedProjects
 
   return (
-    <section id="projects" className="py-20 relative overflow-hidden bg-navy-700">
-      {/* Background elements */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-coral-400/10 via-navy-700 to-navy-800 z-0"></div>
-
-      {/* Grid Pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="grid-pattern" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="0.5" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#grid-pattern)" />
-        </svg>
-      </div>
+    <section id="projects" className="py-24 relative overflow-hidden bg-navy-700">
+      {/* Background Ambience */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_top,_rgba(247,155,114,0.03),transparent_70%)] opacity-50 z-0"></div>
 
       <div className="container mx-auto px-6 relative z-10">
         <SectionHeading
-          title="Projects"
-          subtitle="Explore my portfolio of live websites, web applications, FiveM scripts, Python tools, and IoT projects"
+          title="Latest Projects"
+          subtitle="A showcase of my recent work in web development, FiveM, and automation"
         />
 
-        {/* Category filters */}
-        <motion.div
-          className="flex flex-wrap justify-center gap-4 mb-12"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
+        {/* Minimal Pill Filter */}
+        <div className="flex flex-wrap items-center justify-center gap-2 mt-12 mb-16">
           <button
             onClick={() => setActiveCategory(null)}
-            className={`px-4 py-2 rounded-full flex items-center gap-2 transition-all duration-300 ${
-              activeCategory === null
-                ? "bg-coral-400 text-navy-700"
-                : "bg-navy-800 text-lightgray-300 hover:bg-navy-600"
-            }`}
-          >
-            <Sparkles className="w-4 h-4" />
-            <span>All Projects</span>
-          </button>
-
-          {categories.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => setActiveCategory(category.id)}
-              className={`px-4 py-2 rounded-full flex items-center gap-2 transition-all duration-300 ${
-                activeCategory === category.id
-                  ? "bg-coral-400 text-navy-700"
-                  : "bg-navy-800 text-lightgray-300 hover:bg-navy-600"
+            className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 border ${activeCategory === null
+              ? "bg-coral-400 border-coral-400 text-navy-900 shadow-[0_0_20px_rgba(247,155,114,0.3)]"
+              : "bg-navy-800 border-white/5 text-lightgray-400 hover:border-coral-400/30 hover:text-lightgray-100"
               }`}
+          >
+            All Projects
+          </button>
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setActiveCategory(cat.id)}
+              className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 border flex items-center gap-2 ${activeCategory === cat.id
+                ? "bg-coral-400 border-coral-400 text-navy-900 shadow-[0_0_20px_rgba(247,155,114,0.3)]"
+                : "bg-navy-800 border-white/5 text-lightgray-400 hover:border-coral-400/30 hover:text-lightgray-100"
+                }`}
             >
-              {category.icon}
-              <span>{category.label}</span>
+              <cat.icon className="w-3 h-3" />
+              {cat.label}
             </button>
           ))}
-        </motion.div>
+        </div>
 
-        {/* Projects grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <AnimatePresence>
-            {filteredProjects.map((project, index) => (
-              <motion.div
-                key={project.title}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="h-full"
-              >
-                <Card3D>
-                  {/* Card with 3D effect */}
-                  <div className="bg-navy-800/80 backdrop-blur-md rounded-2xl border border-coral-400/20 h-full flex flex-col overflow-hidden">
-                    {/* Featured badge */}
-                    <div className="absolute top-4 right-4 flex flex-col gap-2">
-                      {project.pinned && (
-                        <div className="px-2 py-1 bg-coral-500/30 backdrop-blur-sm rounded-full text-xs text-coral-400 flex items-center gap-1 border border-coral-500/40">
-                          <Code className="w-3 h-3" />
-                          <span>Pinned</span>
-                        </div>
-                      )}
-                      {project.featured && (
-                        <div className="px-2 py-1 bg-coral-400/20 backdrop-blur-sm rounded-full text-xs text-coral-400 flex items-center gap-1 border border-coral-400/30">
-                          <Sparkles className="w-3 h-3" />
-                          <span>Featured</span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Content */}
-                    <div className="p-6 flex-1 flex flex-col">
-                      <div className="flex items-center mb-4">
-                        <div className="p-3 rounded-full bg-navy-700 mr-4 border border-coral-400/20">
-                          {project.icon}
-                        </div>
-                        <h3 className="text-xl font-bold text-lightgray-100 font-display">{project.title}</h3>
-                      </div>
-
-                      <p className="text-lightgray-300 mb-4">{project.description}</p>
-                      <p className="text-sm text-lightgray-400 mb-6 mt-auto font-mono">{project.techStack}</p>
-
-                      <a
-                        href={project.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center gap-2 w-full py-2 rounded-lg bg-coral-400 hover:bg-coral-500 text-navy-700 font-medium transition-all duration-300"
-                      >
-                        {project.type === "github" ? (
-                          <>
-                            <Github className="w-4 h-4" />
-                            View on GitHub
-                          </>
-                        ) : (
-                          <>
-                            <ExternalLink className="w-4 h-4" />
-                            Visit Website
-                          </>
-                        )}
-                      </a>
-                    </div>
-                  </div>
-                </Card3D>
-              </motion.div>
-            ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+          <AnimatePresence mode="popLayout">
+            {loading ? (
+              Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="h-[400px] rounded-[2.5rem] bg-navy-800/40 border border-white/5 animate-pulse" />
+              ))
+            ) : (
+              filteredProjects.map((project, index) => (
+                <ProjectCard key={project.id} project={project} index={index} />
+              ))
+            )}
           </AnimatePresence>
         </div>
       </div>

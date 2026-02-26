@@ -1,193 +1,152 @@
-"use client"
-
-import { motion } from "framer-motion"
-import { Code, Database, Server, PencilRuler, FileText, Layers, Cloud, Network, Code2 } from "lucide-react"
+import React, { useState, useEffect, useRef } from "react"
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion"
+import { Code, Database, Server, PencilRuler, FileText, Layers, Cloud, Network, Code2, Cpu } from "lucide-react"
 import SectionHeading from "./SectionHeading"
+import { supabase } from "@/lib/supabase/client"
+import type { Database as DB } from "@/lib/supabase/database.types"
 
-// Animated background component
-const AnimatedBackground = () => {
-  return (
-    <div className="absolute inset-0 overflow-hidden">
-      {/* Animated gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-coral-400/10 via-navy-700 to-navy-800 z-0"></div>
+type Skill = DB["public"]["Tables"]["skills"]["Row"]
 
-      {/* Animated particles */}
-      <div className="absolute inset-0 z-0">
-        {Array.from({ length: 40 }).map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1 h-1 rounded-full bg-coral-400/30"
-            initial={{
-              x: Math.random() * 100 + "%",
-              y: Math.random() * 100 + "%",
-              scale: Math.random() * 0.5 + 0.5,
-              opacity: Math.random() * 0.5 + 0.3,
-            }}
-            animate={{
-              x: [
-                Math.random() * 100 + "%",
-                Math.random() * 100 + "%",
-                Math.random() * 100 + "%",
-                Math.random() * 100 + "%",
-              ],
-              y: [
-                Math.random() * 100 + "%",
-                Math.random() * 100 + "%",
-                Math.random() * 100 + "%",
-                Math.random() * 100 + "%",
-              ],
-            }}
-            transition={{
-              duration: Math.random() * 20 + 20,
-              repeat: Number.POSITIVE_INFINITY,
-              ease: "linear",
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Grid pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="skill-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="0.5" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#skill-grid)" />
-        </svg>
-      </div>
-    </div>
-  )
+const iconMap: Record<string, any> = {
+  Code, Database, Server, PencilRuler, FileText, Layers, Cloud, Network, Code2, Cpu
 }
 
-// Skill card component
-const SkillCard = ({
-  icon: Icon,
-  title,
-  technologies,
-  description,
-  color = "coral",
-}: {
-  icon: any
-  title: string
-  technologies: string
-  description: string
-  color?: string
-}) => {
-  const colors = {
-    coral: "from-coral-400/20 to-coral-400/5 border-coral-400/20 text-coral-400",
-    lightgray: "from-lightgray-300/20 to-lightgray-300/5 border-lightgray-300/20 text-lightgray-300",
+const categoryTitles: Record<string, string> = {
+  Frontend: "Frontend",
+  Backend: "Backend",
+  Database: "Database",
+  DevOps: "Cloud",
+  Design: "Creative",
+  Other: "Tools",
+}
+
+const categoryDescriptions: Record<string, string> = {
+  Frontend: "Modern UI/UX interfaces.",
+  Backend: "Scalable server logic.",
+  Database: "Efficient data structures.",
+  DevOps: "Cloud & CI/CD pipelines.",
+  Design: "Visual & Brand identity.",
+  Other: "Custom scripts & tools.",
+}
+
+const BentoBox = ({ category, categorySkills }: { category: string; categorySkills: Skill[] }) => {
+  const mouseX = useMotionValue(0)
+  const mouseY = useMotionValue(0)
+
+  function onMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
+    const { left, top } = currentTarget.getBoundingClientRect()
+    mouseX.set(clientX - left)
+    mouseY.set(clientY - top)
   }
 
-  const colorClass = colors[color as keyof typeof colors] || colors.coral
+  const iconName = categorySkills[0]?.icon_name
+  const Icon = (iconName && iconMap[iconName]) || Code
 
   return (
     <motion.div
-      className={`bg-gradient-to-br ${colorClass} backdrop-blur-md p-6 rounded-xl border hover:border-opacity-50 transition-all duration-300 h-full`}
-      whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(247, 155, 114, 0.2)" }}
+      onMouseMove={onMouseMove}
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.3 }}
+      className="relative group p-6 rounded-[2rem] bg-navy-800/40 backdrop-blur-3xl border border-white/5 overflow-hidden hover:border-coral-400/30 transition-colors duration-500"
     >
-      <div className="flex items-center mb-4">
-        <div className="p-3 rounded-full bg-navy-800 mr-4 border border-navy-600">
-          <Icon className="w-6 h-6" />
+      {/* Magnetic Glow Effect */}
+      <motion.div
+        className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        style={{
+          background: useTransform(
+            [mouseX, mouseY],
+            ([x, y]) => `radial-gradient(400px circle at ${x}px ${y}px, rgba(247,155,114,0.1), transparent 80%)`
+          ),
+        }}
+      />
+
+      <div className="relative z-10">
+        <div className="flex items-center gap-4 mb-6">
+          <div className="w-12 h-12 rounded-xl bg-navy-900 border border-white/5 flex items-center justify-center text-coral-400 group-hover:scale-110 transition-transform duration-500">
+            <Icon className="w-6 h-6" />
+          </div>
+          <div>
+            <h3 className="text-xl font-black text-lightgray-100 uppercase tracking-tighter">{categoryTitles[category]}</h3>
+            <p className="text-[10px] text-lightgray-400 uppercase font-bold tracking-[0.2em]">{categoryDescriptions[category]}</p>
+          </div>
         </div>
-        <h3 className="text-xl font-bold text-lightgray-100 font-display">{title}</h3>
+
+        <div className="flex flex-wrap gap-2">
+          {categorySkills.map((skill) => (
+            <motion.span
+              key={skill.id}
+              whileHover={{ scale: 1.05, y: -2 }}
+              className="px-3 py-1.5 rounded-lg bg-navy-900/50 border border-white/5 text-[11px] font-mono font-bold text-lightgray-300 hover:text-coral-400 hover:border-coral-400/20 transition-all cursor-default"
+            >
+              {skill.name}
+            </motion.span>
+          ))}
+        </div>
       </div>
-      <p className="text-sm text-lightgray-300 font-mono mb-4">{technologies}</p>
-      <p className="text-lightgray-300">{description}</p>
     </motion.div>
   )
 }
 
-export default function Skills() {
-  const skills = [
-    {
-      icon: Code,
-      title: "Front-End Development",
-      technologies: "HTML, CSS, JavaScript, React.js, Next.js, Typescript",
-      description: "Building modern, responsive user interfaces with React.js and core front-end technologies.",
-      color: "coral",
-    },
-    {
-      icon: Server,
-      title: "Back-End Development",
-      technologies: "Node.js, Express, Next.js, Typescript",
-      description: "Developing scalable back-end solutions with multiple programming languages.",
-      color: "lightgray",
-    },
-    {
-      icon: Layers,
-      title: "Frameworks & Stacks",
-      technologies: "MERN, Next.js, Laravel",
-      description: "Expertise in full-stack development using modern frameworks for web applications.",
-      color: "coral",
-    },
-    {
-      icon: Database,
-      title: "Databases",
-      technologies: "MongoDB, MySQL",
-      description: "Efficient database design and management for optimal data handling.",
-      color: "lightgray",
-    },
-    {
-      icon: Network,
-      title: "FiveM Development",
-      technologies: "Lua, JavaScript, QBCore, ESX",
-      description: "Creating custom scripts, systems, and servers for the FiveM platform.",
-      color: "coral",
-    },
-    {
-      icon: Code2,
-      title: "Discord Bot Development",
-      technologies: "Discord.js, Node.js",
-      description: "Building custom Discord bots with advanced features and integrations.",
-      color: "lightgray",
-    },
-    {
-      icon: Cloud,
-      title: "Web Design",
-      technologies: "Figma, Adobe XD, Photoshop",
-      description: "Creating visually appealing and user-friendly web designs and interfaces.",
-      color: "coral",
-    },
-    {
-      icon: PencilRuler,
-      title: "UI/UX Design",
-      technologies: "Wireframing, Prototyping",
-      description: "Designing intuitive user interfaces and seamless user experiences.",
-      color: "lightgray",
-    },
-    {
-      icon: FileText,
-      title: "Version Control",
-      technologies: "Git, GitHub",
-      description: "Managing code versions and collaborating effectively with other developers.",
-      color: "coral",
-    },
-  ]
+const AnimatedBackground = () => {
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+  if (!mounted) return null
 
   return (
-    <section id="skills" className="py-20 relative overflow-hidden bg-navy-700">
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_rgba(247,155,114,0.03),transparent_70%)] opacity-50 z-0"></div>
+    </div>
+  )
+}
+
+export default function Skills() {
+  const [skills, setSkills] = useState<Skill[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchSkills = async () => {
+      setLoading(true)
+      try {
+        const { data, error } = await supabase
+          .from("skills")
+          .select("*")
+          .order("order_index", { ascending: true })
+
+        if (error) throw error
+        setSkills(data || [])
+      } catch (error) {
+        console.error("Error fetching skills:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchSkills()
+  }, [])
+
+  const categories = ["Frontend", "Backend", "Database", "DevOps", "Design", "Other"]
+
+  return (
+    <section id="skills" className="py-24 relative overflow-hidden bg-navy-700">
       <AnimatedBackground />
 
       <div className="container mx-auto px-6 relative z-10">
-        <SectionHeading title="Technical Skills" />
+        <SectionHeading title="Skills & Tools" />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {skills.map((skill, index) => (
-            <SkillCard
-              key={index}
-              icon={skill.icon}
-              title={skill.title}
-              technologies={skill.technologies}
-              description={skill.description}
-              color={index % 2 === 0 ? "coral" : "lightgray"}
-            />
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-16 max-w-7xl mx-auto">
+          {loading ? (
+            Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="h-48 rounded-[2rem] bg-navy-800/40 border border-white/5 animate-pulse" />
+            ))
+          ) : (
+            categories.map((cat) => (
+              <BentoBox
+                key={cat}
+                category={cat}
+                categorySkills={skills.filter((s) => s.category === cat)}
+              />
+            ))
+          )}
         </div>
       </div>
     </section>
